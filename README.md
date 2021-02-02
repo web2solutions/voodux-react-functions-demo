@@ -1,6 +1,6 @@
-#   <img src="https://avatars3.githubusercontent.com/u/14809007?s=280&v=4" width="50" />  Agnostic Web Foundation - React Demo
+#   <img src="https://avatars3.githubusercontent.com/u/14809007?s=280&v=4" width="50" /> Agnostic Web Foundation - React Demo
 
-React application demo using the [Agnostic Web Foundation](https://github.com/web2solutions/agnostic-web-foundation).
+React application demo leveraging [Agnostic Web Foundation](https://github.com/web2solutions/agnostic-web-foundation) as underlying architecture.
 
 This demo focus on `React functional components`.
 
