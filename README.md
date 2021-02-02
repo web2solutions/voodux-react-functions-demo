@@ -15,11 +15,7 @@ It uses [Material UI](https://material-ui.com/) as UI framework.
 [Check the online demo](https://agnostic-web-foundation-react-functions-demo.vercel.app/)
 
 
-<img src="https://i.imgur.com/b29Lsgj.png" width="500" />
-
-<img src="https://i.imgur.com/bBaDsWx.png" width="500" />
-
-<img src="https://i.imgur.com/wGkQgmK.png" width="500" />
+<img src="https://i.imgur.com/b29Lsgj.png" width="600" />
 
 
 
