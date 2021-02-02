@@ -1,4 +1,4 @@
-#   <img src="https://avatars3.githubusercontent.com/u/14809007?s=280&v=4" width="50" />  agnostic-web-foundation-react-functions-demo
+#   <img src="https://avatars3.githubusercontent.com/u/14809007?s=280&v=4" width="50" />  Agnostic Web Foundation - React Demo
 
 React application demo using the [Agnostic Web Foundation](https://github.com/web2solutions/agnostic-web-foundation).
 
