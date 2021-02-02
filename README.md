@@ -4,6 +4,9 @@ React application demo using the [Agnostic Web Foundation](https://github.com/we
 
 This demo focus on `React functional components`.
 
+It uses [Material UI](https://material-ui.com/) as UI framework.
+
+
 `This project was NOT bootstrapped with Create React App.`
 
 
@@ -12,7 +15,7 @@ This demo focus on `React functional components`.
 https://agnostic-web-foundation-react-functions-demo.vercel.app/
 
 
-### Agnostic Web Foundation Docs (DRAFT)
+### Agnostic Web Foundation Docs
 
 [Project](https://github.com/web2solutions/agnostic-web-foundation)
 [Code Documentation](https://web2solutions.github.io/agnostic-web-foundation/)
