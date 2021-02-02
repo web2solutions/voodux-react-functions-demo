@@ -8,10 +8,10 @@ React application (function based components) demo using Agnostic Web Foundation
 
 ### Demo app (DRAFT)
 
-https://agnostic-web-foundation-react-functions-demo.web2solutions.vercel.app/
+https://agnostic-web-foundation-react-functions-demo.vercel.app/
 
 
-### Docs (DRAFT)
+### Agnostic Web Foundation Docs (DRAFT)
 
 https://web2solutions.github.io/agnostic-web-foundation/
 
@@ -19,9 +19,6 @@ https://web2solutions.github.io/agnostic-web-foundation/
 
 ### Code automation tools
 
-- `npm run test`
-
-  Executes the test suite
 
 - `npm run start:dev`
 
@@ -32,9 +29,7 @@ https://web2solutions.github.io/agnostic-web-foundation/
   Build the application inside `dist/` folder
 
   1. Runs `npm run lint`
-  2. Runs `npm run test`
-  3. Runs `npm run doc`
-  4. Runs `npm run webpack`
+  2. Runs `npm run webpack`
 
 - `npm run doc`
 
