@@ -1,0 +1,35 @@
+{
+  "plugins": [
+    "plugins/summarize"
+  ],
+  "recurseDepth": 10,
+  "source": {
+    "include": ["./src/"],
+    "exclude": ["./dist/"],
+    "includePattern": ".+\\.js(doc|x)?$",
+    "excludePattern": "(^|\\/|\\\\)_"
+  },
+  "sourceType": "module",
+  "tags": {
+    "allowUnknownTags": true,
+    "dictionaries": ["jsdoc", "closure"]
+  },
+  "templates": {
+    "cleverLinks": true,
+    "monospaceLinks": true,
+    "systemName": "Agnostic Web Application Foundation",
+    "footer": "<br><br><br><br>Sponsored by WEB2 Solutions",
+    "copyright": "Eduardo Almeida",
+    "navType" : "{inline}",
+    "linenums": true,
+    "outputSourceFiles": true
+  },
+  "opts": {
+    "destination": "./docs/code/", // same as -d ./out/
+    "recurse": true
+  },
+  "babel": {
+    "presets": ["@babel/preset-env"],
+    "plugins": ["@babel/plugin-transform-runtime", "@babel/plugin-proposal-class-properties"]
+  }
+}
