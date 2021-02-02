@@ -10,9 +10,11 @@ It uses [Material UI](https://material-ui.com/) as UI framework.
 `This project was NOT bootstrapped with Create React App.`
 
 
-### Demo app (DRAFT)
+### Demo app
 
-https://agnostic-web-foundation-react-functions-demo.vercel.app/
+[Check the online demo](https://agnostic-web-foundation-react-functions-demo.vercel.app/)
+
+
 
 
 ### Agnostic Web Foundation Docs
