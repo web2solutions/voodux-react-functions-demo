@@ -33,7 +33,7 @@ It uses [Material UI](https://material-ui.com/) as UI framework.
 
 - `npm run start:dev`
 
-  Starts the dev server at 5490 port
+  Starts the dev server at 5491 port
 
 - `npm run build`
 
