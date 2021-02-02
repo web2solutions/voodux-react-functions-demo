@@ -1,9 +1,10 @@
 #   <img src="https://avatars3.githubusercontent.com/u/14809007?s=280&v=4" width="50" />  agnostic-web-foundation-react-functions-demo
 
-React application (function based components) demo using Agnostic Web Foundation - DRAFT
+React application demo using the [Agnostic Web Foundation](https://github.com/web2solutions/agnostic-web-foundation).
+
+This demo focus on `React functional components`.
 
 `This project was NOT bootstrapped with Create React App.`
-
 
 
 ### Demo app (DRAFT)
@@ -13,7 +14,8 @@ https://agnostic-web-foundation-react-functions-demo.vercel.app/
 
 ### Agnostic Web Foundation Docs (DRAFT)
 
-https://web2solutions.github.io/agnostic-web-foundation/
+[Project](https://github.com/web2solutions/agnostic-web-foundation)
+[Code Documentation](https://web2solutions.github.io/agnostic-web-foundation/)
 
 
 
