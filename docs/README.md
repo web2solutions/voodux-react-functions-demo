@@ -1,3 +1,5 @@
+<img src="https://i.imgur.com/614mA0U.png" width="200" />
+
 # React Demo App - Functions based components
 
 This is a React application demo leveraging the [Agnostic Web Foundation](https://github.com/web2solutions/agnostic-web-foundation).
