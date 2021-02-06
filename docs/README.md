@@ -2,9 +2,9 @@
 
 This is a React application demo leveraging the [Agnostic Web Foundation](https://github.com/web2solutions/agnostic-web-foundation).
 
-`This demo is totaly built using React.Component functions.`
+`This demo is totaly built using React functional components`
 
-`This demo is built using Bootstrap 4.`
+`This demo is built using Material UI.`
 
 `This project was NOT bootstrapped with Create React App.`
 
