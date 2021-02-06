@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width">
+	<title>Agnostic Web Application Foundation Source: App.js</title>
+
+	<!--[if lt IE 9]>
+	<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
+	<link type="text/css" rel="stylesheet" href="styles/sunlight.default.css">
+
+	<link type="text/css" rel="stylesheet" href="styles/site.simplex.css">
+
+</head>
+
+<body>
+
+<div class="navbar navbar-default navbar-fixed-top ">
+<div class="container">
+	<div class="navbar-header">
+		<a class="navbar-brand" href="index.html">Agnostic Web Application Foundation</a>
+		<button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#topNavigation">
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+        </button>
+	</div>
+	<div class="navbar-collapse collapse" id="topNavigation">
+		<ul class="nav navbar-nav">
+			
+			<li class="dropdown">
+				<a href="classes.list.html" class="dropdown-toggle" data-toggle="dropdown">Classes<b class="caret"></b></a>
+				<ul class="dropdown-menu ">
+					<li><a href="Chart.html">Chart</a></li>
+				</ul>
+			</li>
+			
+			<li class="dropdown">
+				<a href="global.html" class="dropdown-toggle" data-toggle="dropdown">Global<b class="caret"></b></a>
+				<ul class="dropdown-menu ">
+					<li><a href="global.html#App">App</a></li>
+				</ul>
+			</li>
+			
+		</ul>
+        
+            <div class="col-sm-3 col-md-3">
+                <form class="navbar-form" role="search">
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Search" name="q" id="search-input">
+                        <div class="input-group-btn">
+                            <button class="btn btn-default" id="search-submit"><i class="glyphicon glyphicon-search"></i></button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        
+	</div>
+
+</div>
+</div>
+
+
+<div class="container" id="toc-content">
+<div class="row">
+
+	
+	<div class="col-md-12">
+	
+		<div id="main">
+			
+
+		<h1 class="page-title">Source: App.js</h1>
+    
+<section>
+    <article>
+        <pre
+            class="sunlight-highlight-javascript linenums">import React from 'react'
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route
+} from 'react-router-dom'
+import clsx from 'clsx'
+
+import CssBaseline from '@material-ui/core/CssBaseline'
+import Drawer from '@material-ui/core/Drawer'
+import Box from '@material-ui/core/Box'
+import AppBar from '@material-ui/core/AppBar'
+import Toolbar from '@material-ui/core/Toolbar'
+import List from '@material-ui/core/List'
+import Typography from '@material-ui/core/Typography'
+import Divider from '@material-ui/core/Divider'
+import IconButton from '@material-ui/core/IconButton'
+import Badge from '@material-ui/core/Badge'
+import Container from '@material-ui/core/Container'
+import MenuIcon from '@material-ui/icons/Menu'
+import ChevronLeftIcon from '@material-ui/icons/ChevronLeft'
+import NotificationsIcon from '@material-ui/icons/Notifications'
+
+import useStyles from './components/useStyles'
+
+import { mainListItems, secondaryListItems } from './components/listItems'
+import Dashboard from './components/Dashboard'
+import Copyright from './components/Copyright'
+import Orders from './components/Orders'
+import OrderEdit from './components/OrderEdit'
+import OrderAdd from './components/OrderAdd'
+
+import Customers from './components/Customers'
+import CustomerEdit from './components/CustomerEdit'
+import CustomerAdd from './components/CustomerAdd'
+
+/**
+ * @author Eduardo Perotta de Almeida &lt;web2solucoes@gmail.com>
+ * @function App
+ * @description React main component
+ */
+export default function App (props) {
+  const classes = useStyles()
+  const [open, setOpen] = React.useState(true)
+  const handleDrawerOpen = () => {
+    setOpen(true)
+  }
+  const handleDrawerClose = () => {
+    setOpen(false)
+  }
+
+  return (
+    &lt;Router>
+      &lt;div className={classes.root}>
+        &lt;CssBaseline />
+        &lt;AppBar position='absolute' className={clsx(classes.appBar, open &amp;&amp; classes.appBarShift)}>
+          &lt;Toolbar className={classes.toolbar}>
+            &lt;IconButton
+              edge='start'
+              color='inherit'
+              aria-label='open drawer'
+              onClick={handleDrawerOpen}
+              className={clsx(classes.menuButton, open &amp;&amp; classes.menuButtonHidden)}
+            >
+              &lt;MenuIcon />
+            &lt;/IconButton>
+            &lt;Route>
+              {({ location }) => (
+                &lt;Typography component='h1' variant='h6' color='inherit' noWrap className={classes.title}>
+                  {location.pathname.replace(/\//g, '')}
+                &lt;/Typography>
+              )}
+            &lt;/Route>
+            &lt;IconButton color='inherit'>
+              &lt;Badge badgeContent={4} color='secondary'>
+                &lt;NotificationsIcon />
+              &lt;/Badge>
+            &lt;/IconButton>
+          &lt;/Toolbar>
+        &lt;/AppBar>
+        &lt;Drawer
+          variant='permanent'
+          classes={{
+            paper: clsx(classes.drawerPaper, !open &amp;&amp; classes.drawerPaperClose)
+          }}
+          open={open}
+        >
+          &lt;div className={classes.toolbarIcon}>
+            &lt;IconButton onClick={handleDrawerClose}>
+              &lt;ChevronLeftIcon />
+            &lt;/IconButton>
+          &lt;/div>
+          &lt;Divider />
+          &lt;List>{mainListItems}&lt;/List>
+          &lt;Divider />
+          &lt;List>{secondaryListItems}&lt;/List>
+        &lt;/Drawer>
+        &lt;main className={classes.content}>
+          &lt;div className={classes.appBarSpacer} />
+          &lt;Container maxWidth='lg' className={classes.container}>
+            &lt;Switch>
+              &lt;Route path='/Orders'>
+                &lt;Orders entity='Order' foundation={props.foundation} />
+              &lt;/Route>
+              &lt;Route path='/OrdersEdit/:__id'>
+                &lt;OrderEdit entity='Order' foundation={props.foundation} />
+              &lt;/Route>
+              &lt;Route path='/OrdersAdd'>
+                &lt;OrderAdd entity='Order' foundation={props.foundation} />
+              &lt;/Route>
+              &lt;Route path='/Customers'>
+                &lt;Customers entity='Customer' foundation={props.foundation} />
+              &lt;/Route>
+              &lt;Route path='/CustomersEdit/:__id'>
+                &lt;CustomerEdit entity='Customer' foundation={props.foundation} />
+              &lt;/Route>
+              &lt;Route path='/CustomersAdd'>
+                &lt;CustomerAdd entity='Customer' foundation={props.foundation} />
+              &lt;/Route>
+              &lt;Route path='/'>
+                &lt;Dashboard foundation={props.foundation} />
+              &lt;/Route>
+            &lt;/Switch>
+            &lt;Box pt={4}>
+              &lt;Copyright />
+            &lt;/Box>
+          &lt;/Container>
+        &lt;/main>
+      &lt;/div>
+    &lt;/Router>
+  )
+}
+</pre>
+    </article>
+</section>
+
+
+
+
+
+		</div>
+	</div>
+
+	<div class="clearfix"></div>
+
+	
+
+</div>
+</div>
+
+
+    <div class="modal fade" id="searchResults">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">Search results</h4>
+          </div>
+          <div class="modal-body"></div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div>
+
+
+<footer>
+
+	<br><br><br><br>Sponsored by WEB2 Solutions
+
+
+	<span class="copyright">
+	Eduardo Almeida
+	</span>
+
+<span class="jsdoc-message">
+	Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.6</a>
+	
+		on 2021-02-06T05:17:23-03:00
+	
+	using the <a href="https://github.com/docstrap/docstrap">DocStrap template</a>.
+</span>
+</footer>
+
+<script src="scripts/docstrap.lib.js"></script>
+<script src="scripts/toc.js"></script>
+
+    <script type="text/javascript" src="scripts/fulltext-search-ui.js"></script>
+
+
+<script>
+$( function () {
+	$( "[id*='$']" ).each( function () {
+		var $this = $( this );
+
+		$this.attr( "id", $this.attr( "id" ).replace( "$", "__" ) );
+	} );
+
+	$( ".tutorial-section pre, .readme-section pre, pre.prettyprint.source" ).each( function () {
+		var $this = $( this );
+
+		var example = $this.find( "code" );
+		exampleText = example.html();
+		var lang = /{@lang (.*?)}/.exec( exampleText );
+		if ( lang && lang[1] ) {
+			exampleText = exampleText.replace( lang[0], "" );
+			example.html( exampleText );
+			lang = lang[1];
+		} else {
+			var langClassMatch = example.parent()[0].className.match(/lang\-(\S+)/);
+			lang = langClassMatch ? langClassMatch[1] : "javascript";
+		}
+
+		if ( lang ) {
+
+			$this
+			.addClass( "sunlight-highlight-" + lang )
+			.addClass( "linenums" )
+			.html( example.html() );
+
+		}
+	} );
+
+	Sunlight.highlightAll( {
+		lineNumbers : true,
+		showMenu : true,
+		enableDoclinks : true
+	} );
+
+	$.catchAnchorLinks( {
+        navbarOffset: 10
+	} );
+	$( "#toc" ).toc( {
+		anchorName  : function ( i, heading, prefix ) {
+			return $( heading ).attr( "id" ) || ( prefix + i );
+		},
+		selectors   : "#toc-content h1,#toc-content h2,#toc-content h3,#toc-content h4",
+		showAndHide : false,
+		smoothScrolling: true
+	} );
+
+	$( "#main span[id^='toc']" ).addClass( "toc-shim" );
+	$( '.dropdown-toggle' ).dropdown();
+
+    $( "table" ).each( function () {
+      var $this = $( this );
+      $this.addClass('table');
+    } );
+
+} );
+</script>
+
+
+
+<!--Navigation and Symbol Display-->
+
+
+<!--Google Analytics-->
+
+
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            SearcherDisplay.init();
+        });
+    </script>
+
+
+</body>
+</html>

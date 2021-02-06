@@ -34,6 +34,11 @@ import Customers from './components/Customers'
 import CustomerEdit from './components/CustomerEdit'
 import CustomerAdd from './components/CustomerAdd'
 
+/**
+ * @author Eduardo Perotta de Almeida <web2solucoes@gmail.com>
+ * @function App
+ * @description React main component
+ */
 export default function App (props) {
   const classes = useStyles()
   const [open, setOpen] = React.useState(true)

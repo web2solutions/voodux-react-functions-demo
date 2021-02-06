@@ -20,7 +20,7 @@
     "eslint-fix": "eslint src/**/**/**/**/**/*.js --fix",
     "format-code": "prettier-eslint --write \"src/**/*.js\" \"src/**/*.jsx\"",
     "doc": "npx jsdoc -c ./jsDoc.json -t ./node_modules/ink-docstrap/template -R ./docs/README.md",
-    "build": "npm run rm && npm run lint && npm run webpack",
+    "build": "npm run rm && npm run lint && npm run doc && npm run webpack",
     "rm": "rm -rf ./dist && mkdir dist/ && cp -a html_app/. dist",
     "start:dev": "webpack serve"
   },

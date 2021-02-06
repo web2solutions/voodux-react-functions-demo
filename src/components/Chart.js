@@ -18,6 +18,11 @@ import Title from './Title'
   maximumFractionDigits: 2
 }) */
 
+/**
+ * @author Eduardo Perotta de Almeida <web2solucoes@gmail.com>
+ * @constructor Chart
+ * @description React main component
+ */
 export default function Chart (props) {
   const [series, setSeries] = useState([
     { time: '00:00', amount: 0 },
