@@ -38,7 +38,7 @@ export default function Orders (props) {
 
   const handleDeleteOrder = async (e, ___id) => {
     e.preventDefault()
-    console.error(___id)
+    // console.error(___id)
     swal({
       title: 'Are you sure?',
       text: 'Once deleted, you will not be able to recover this!',
