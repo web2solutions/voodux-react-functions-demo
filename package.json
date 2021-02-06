@@ -68,5 +68,5 @@
     "recharts": "^2.0.4",
     "sweetalert": "^2.1.2"
   },
-  "description": ""
+  "description": "React application (Functional components) demo leveraging the [Agnostic Web Foundation](https://github.com/web2solutions/agnostic-web-foundation) as it underlying architecture to handle it data."
 }
