@@ -1,5 +1,5 @@
 {
-  "name": "agnostic-web-foundation-react-functions-demo",
+  "name": "voodux-react-functions-demo",
   "version": "0.0.1",
   "build": 0,
   "author": {
@@ -10,7 +10,7 @@
   "contributors": [],
   "repository": {
     "type": "git",
-    "url": "https://github.com/web2solutions/agnostic-web-foundation-react-functions-demo.git"
+    "url": "https://github.com/web2solutions/voodux-react-functions-demo.git"
   },
   "license": "MIT",
   "main": "main.js",
@@ -68,5 +68,5 @@
     "recharts": "^2.0.4",
     "sweetalert": "^2.1.2"
   },
-  "description": "React application (Functional components) demo leveraging the [Agnostic Web Foundation](https://github.com/web2solutions/agnostic-web-foundation) as it underlying architecture to handle it data."
+  "description": "React application (Functional components) demo leveraging the [voodux](https://github.com/web2solutions/voodux) as it underlying architecture to handle it data."
 }

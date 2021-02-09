@@ -2,7 +2,7 @@
 
 # React Demo App - Functions based components
 
-This is a React application demo leveraging the [Agnostic Web Foundation](https://github.com/web2solutions/agnostic-web-foundation).
+This is a React application demo leveraging the [voodux](https://github.com/web2solutions/voodux).
 
 `This demo is totaly built using React functional components`
 
@@ -58,10 +58,10 @@ This is a React application demo leveraging the [Agnostic Web Foundation](https:
 
 ## Links
 
-- [Code Documentation of this demo](https://web2solutions.github.io/agnostic-web-foundation-react-functions-demo/code/index.html)
+- [Code Documentation of this demo](https://web2solutions.github.io/voodux-react-functions-demo/code/index.html)
 
-- [Unit tests Report](https://web2solutions.github.io/agnostic-web-foundation-react-functions-demo/reports/unit-testing/index.html)
+- [Unit tests Report](https://web2solutions.github.io/voodux-react-functions-demo/reports/unit-testing/index.html)
 
-- [Agnostic Web Foundation Code documentation](https://web2solutions.github.io/agnostic-web-foundation/code/index.html)
+- [voodux Code documentation](https://web2solutions.github.io/voodux/code/index.html)
 
-- [Agnostic Web Foundation Project](https://github.com/web2solutions/agnostic-web-foundation)
+- [voodux Project](https://github.com/web2solutions/voodux)

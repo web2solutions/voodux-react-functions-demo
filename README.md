@@ -1,9 +1,9 @@
 <img src="https://i.imgur.com/614mA0U.png" width="200" />
 
 
-#   <img src="https://avatars3.githubusercontent.com/u/14809007?s=280&v=4" width="50" /> Agnostic Web Foundation - React Demo
+#   <img src="https://avatars3.githubusercontent.com/u/14809007?s=280&v=4" width="50" /> voodux - React Demo
 
-React application (Functional components) demo leveraging the [Agnostic Web Foundation](https://github.com/web2solutions/agnostic-web-foundation) as it underlying architecture to handle it data.
+React application (Functional components) demo leveraging the [voodux](https://github.com/web2solutions/voodux) as it underlying architecture to handle it data.
 
 This demo focus on `React functional components`.
 
@@ -15,19 +15,19 @@ It uses [Material UI](https://material-ui.com/) as UI framework.
 
 ### Demo app
 
-[Check the online demo](https://agnostic-web-foundation-react-functions-demo.vercel.app/)
+[Check the online demo](https://voodux-react-functions-demo.vercel.app/)
 
 
 <img src="https://i.imgur.com/b29Lsgj.png" width="600" />
 
 
 
-### Agnostic Web Foundation Docs
+### voodux Docs
 
-[Project](https://github.com/web2solutions/agnostic-web-foundation)
+[Project](https://github.com/web2solutions/voodux)
 
 
-[Code Documentation](https://web2solutions.github.io/agnostic-web-foundation/)
+[Code Documentation](https://web2solutions.github.io/voodux/)
 
 
 
