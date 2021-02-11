@@ -22,6 +22,10 @@ const formatter = new Intl.NumberFormat('en-US', {
   maximumFractionDigits: 2
 })
 
+let onAddDocEventListener = null
+let onEditDocEventListener = null
+let onDeleteDocEventListener = null
+
 export default function Deposits (props) {
   const [total, setTotal] = useState(0)
   const { Order } = props.foundation.data
@@ -41,38 +45,46 @@ export default function Deposits (props) {
     }
   }
 
-  props.foundation.on(`collection:add:${props.entity.toLowerCase()}`, async function (eventObj) {
-    const { error /* , document, foundation, data */ } = eventObj
-    if (error) {
-      console.error(`Error adding user: ${error}`)
-      return
-    }
-    await _setTotal()
-  })
+  useEffect(() => {
+    // console.debug('------->>>>> Deposits.js mount events', props.foundation.stopListenTo)
+    onAddDocEventListener = props.foundation.on(`collection:add:${props.entity.toLowerCase()}`, async function (eventObj) {
+      const { error /* , document, foundation, data */ } = eventObj
+      if (error) {
+        // console.error(`Error adding user: ${error}`)
+        return
+      }
+      await _setTotal()
+    })
 
-  // listen to update Order Collection event on Data API
-  props.foundation.on(`collection:edit:${props.entity.toLowerCase()}`, async function (eventObj) {
-    const { /* data, primaryKey,  document, foundation, */ error } = eventObj
-    if (error) {
-      console.error(`Error updating user: ${error}`)
-      return
-    }
-    await _setTotal()
-  })
+    // listen to update Order Collection event on Data API
+    onEditDocEventListener = props.foundation.on(`collection:edit:${props.entity.toLowerCase()}`, async function (eventObj) {
+      const { /* data, primaryKey,  document, foundation, */ error } = eventObj
+      if (error) {
+        // console.error(`Error updating user: ${error}`)
+        return
+      }
+      await _setTotal()
+    })
 
-  // listen to delete Order Collection event on Data API
-  props.foundation.on(`collection:delete:${props.entity.toLowerCase()}`, async function (eventObj) {
-    const { error /* , document, foundation,  data */ } = eventObj
-    if (error) {
-      console.error(`Error deleting user: ${error}`)
-      return
+    // listen to delete Order Collection event on Data API
+    onDeleteDocEventListener = props.foundation.on(`collection:delete:${props.entity.toLowerCase()}`, async function (eventObj) {
+      const { error /* , document, foundation,  data */ } = eventObj
+      if (error) {
+        // console.error(`Error deleting user: ${error}`)
+        return
+      }
+      await _setTotal()
+    })
+      // got total
+    ; (async () => (await _setTotal()))()
+    
+    return () => {
+      // stop to listen events on component unmount
+      // console.debug('------->>>>> Deposits.js remove events')
+      props.foundation.stopListenTo(onAddDocEventListener)
+      props.foundation.stopListenTo(onEditDocEventListener)
+      props.foundation.stopListenTo(onDeleteDocEventListener)
     }
-    await _setTotal()
-  })
-
-  useEffect(async () => {
-    // got total
-    await _setTotal()
   }, []) // run one time only
 
   return (

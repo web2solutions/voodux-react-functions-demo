@@ -1,32 +1,10 @@
 /* global localStorage, navigator, window */
 import { createMethodSignature, GUID, Schema } from './utils'
-import DataAPI from './DataAPI'
+import DataEntity from './DataEntity'
 import LocalDatabaseTransport from './LocalDatabaseTransport'
 import EventSystem from './EventSystem'
 
-
-
-const _workerOnMessage = function (event) {
-  // console.error('_workerOnMessage')
-  const {
-    cmd /* , message */
-  } = event.data
-  switch (cmd) {
-    case 'responseClientId':
-      this.triggerEvent('worker:responseClientId', {
-        foundation: this,
-        worker: this.applicationWorker,
-        ...event.data
-      })
-      break
-    default:
-      console.log(`Sorry, we are out of ${cmd}.`)
-  }
-}
-
-
-
-
+// import workerOnMessage from './events/workerOnMessage'
 
 /**
  * @author Eduardo Perotta de Almeida <web2solucoes@gmail.com>
@@ -39,71 +17,151 @@ const _workerOnMessage = function (event) {
  * @param  {boolean} config.useWorker - Use a ServiceWorker in Background
  * @param  {object}  config.schemas - map of data schemas
  * @example {@lang javascript}
-    import Foundation from './Foundation'
-    import mongoose from 'mongoose'
+// =========> main.js
+// import React
+import React from 'react'
+import ReactDOM from 'react-dom'
 
-    const ProductSchema = new mongoose.Schema({
-      name: {
+// import Bootstrap
+import 'bootstrap/dist/css/bootstrap.css'
+
+// import React app
+import App from './App'
+
+// import agnostic foundation foundation class
+import Foundation from './foundation/Foundation'
+
+const CustomerSchema = new Foundation.Schema({
+    name: {
         type: String,
         required: true,
         index: true
-      },
-      vendor: {
+    },
+    address: {
         type: String,
         required: true,
         index: true
-      },
-      price_cost: {
+    },
+    email: {
+        type: String,
+        required: true,
+        index: true
+    },
+    cards: {
+        type: [],
+        required: true
+    }
+})
+
+const OrderSchema = new Foundation.Schema({
+    name: {
+        type: String,
+        required: true,
+        index: true
+    },
+    shipTo: {
+        type: String,
+        required: true,
+        index: true
+    },
+    paymentMethod: {
+        type: String,
+        required: true,
+        index: true
+    },
+    amount: {
         type: Number,
         required: true,
         default: 0,
         index: true
-      }
-    })
+    },
+    date: {
+        type: Date,
+        default: Date.now,
+        index: true
+    }
+})
 
-    const UserSchema = new mongoose.Schema({
-      name: {
+const ProductSchema = new Foundation.Schema({
+    name: {
+        type: String,
+        required: true,
+        index: true
+    },
+    vendor: {
+        type: String,
+        required: true,
+        index: true
+    },
+    price_cost: {
+        type: Number,
+        required: true,
+        default: 0,
+        index: true
+    }
+})
+
+const UserSchema = new Foundation.Schema({
+    name: {
         type: String,
         required: true
-      },
-      username: {
+    },
+    username: {
         type: String,
         required: true
-      }
-    })
+    }
+})
 
-    const foundation = new Foundation({
-      name: 'My App',
-      useWorker: true,
-      dataStrategy: 'offlineFirst',
-      schemas: {
+const foundation = new Foundation({
+    name: 'My App',
+    useWorker: true,
+    dataStrategy: 'offlineFirst',
+    schemas: {
         User: UserSchema,
-        Product: ProductSchema
-      }
-    })
+        Product: ProductSchema,
+        Order: OrderSchema,
+        Customer: CustomerSchema
+    }
+})
 
-    foundation.on('foundation:start', function (eventObj){
-      const { foundation, error } = eventObj
-      if (error) {
+foundation.on('foundation:start', async function(eventObj) {
+    const {
+        foundation,
+        error
+    } = eventObj
+    if (error) {
         throw new Error(`Error starting foundation stack: ${error}`)
-      }
-      const { User, Product } = foundation.data
-      const Eduardo = await User.add({
+    }
+    const {
+        User,
+        Product
+    } = foundation.data
+    const Eduardo = await User.add({
         name: 'Eduardo Almeida',
         username: 'web2'
-      })
-      console.debug('Eduardo', Eduardo)
+    })
+    // console.debug('Eduardo', Eduardo)
 
-      const Volvo = await Product.add({
+    const Volvo = await Product.add({
         name: 'Volvo XC90',
         vendor: 'Volvo',
         price_cost: 150000
-      })
-      console.debug('Volvo', Volvo)
     })
-    
-    // start foundation and get it ready to be used
-    await foundation.start()
+    // console.debug('Volvo', Volvo)
+})
+
+// start foundation and get it ready to be used
+await foundation.start()
+
+const start = await foundation.start()
+if (start.error) {
+    throw new Error(`Error starting foundation stack: ${start.error}`)
+}
+// console.debug('start', start)
+ReactDOM.render(
+  <App foundation={foundation} />,
+  document.getElementById('root')
+)
  */
 export default class Foundation extends EventSystem {
   
@@ -140,7 +198,7 @@ export default class Foundation extends EventSystem {
   /**
    * @member {getter} Foundation.dataStrategy
    * @Description Get the data strategy being used.<br> Possible values are: offlineFirst, onlineFirst, offline, online. <br> Default: offlineFirst
-   * @example console.log(Foundation.dataStrategy)
+   * @example // console.log(Foundation.dataStrategy)
    * @return {string} this.#_dataStrategy
    */
   get dataStrategy () {
@@ -150,7 +208,7 @@ export default class Foundation extends EventSystem {
   /**
    * @member {getter} Foundation.guid
    * @description Get the Foundation Session guid currently being used.
-   * @example console.log(Foundation.guid)
+   * @example // console.log(Foundation.guid)
    */
   get guid () {
     return this.#_guid
@@ -158,14 +216,14 @@ export default class Foundation extends EventSystem {
 
   /**
    * @member {getter} Foundation.data
-   * @description Get the Foundation data API(DataAPI)
+   * @description Get the Foundation data API(DataEntity)
    * @example 
       const { User, Product } = foundation.data
       const Eduardo = await User.add({
         name: 'Eduardo Almeida',
         username: 'web2'
       })
-      console.debug(Eduardo)
+      // console.debug(Eduardo)
       // {  
       //    data: {__id: 1, _id: "600e0ae8d9d7f50000e1444b", name: "Eduardo Almeida", username: "web2", id: "600e0ae8d9d7f50000e1444b"}
       //    error: null
@@ -179,7 +237,7 @@ export default class Foundation extends EventSystem {
    * @member {getter} Foundation.tabId
    * @description Get the Browser tab ID
    * @example 
-      console.log(foundation.tabId)
+      // console.log(foundation.tabId)
    */
   get tabId() {
     return this.#_tabId
@@ -189,7 +247,7 @@ export default class Foundation extends EventSystem {
    * @member {getter} Foundation.name
    * @name Foundation.name
    * @description Get the Foundation name
-   * @example console.log(Foundation.name)
+   * @example // console.log(Foundation.name)
    */
   get name () {
     return this.#_name
@@ -209,7 +267,7 @@ export default class Foundation extends EventSystem {
   /**
    * @member {getter} Foundation.started
    * @description Get the start state
-   * @example console.log(Foundation.started)
+   * @example // console.log(Foundation.started)
    */
   get started () {
     return this.#_started
@@ -225,16 +283,12 @@ export default class Foundation extends EventSystem {
     return this.#_workers.foundation
   }
 
-  #setModel(entity = '', dataAPI = {}) {
+  #setModel(entity = '', dataEntity = {}) {
     let _error = null
     let _data = null
-    try {
-      this.#_models[entity] =  dataAPI
-      _data = this.#_models[entity]
-    } catch (error) {
-      console.error('EROROR', error)
-      _error = error
-    }
+    this.#_models[entity] = dataEntity
+    _data = this.#_models[entity]
+
     return createMethodSignature(_error, _data)
   }
   
@@ -258,18 +312,18 @@ export default class Foundation extends EventSystem {
           // console.debug('for (const entity in schemas)', entity)
           const strategy = 'offlineFirst'
           const schema = schemas[entity]
-          const dataAPI = new DataAPI({
+          const dataEntity = new DataEntity({
             foundation: this,
             entity,
             strategy,
             schema
           })
-          this.#setModel(entity, dataAPI)
+          this.#setModel(entity, dataEntity)
         }
       }
       _data = this.#_models
     } catch (error) {
-      console.error(error)
+      // console.error(error)
       _error = error
     }
     return createMethodSignature(_error, _data)
@@ -291,18 +345,8 @@ export default class Foundation extends EventSystem {
    * @return Foundation GUID saved on localStorage
    */
   setGuidStorage (guid) {
-    localStorage.setItem('guid', guid)
-    return localStorage.getItem('guid')
-  }
-
-  /**
-   * @Method Foundation.getGuidStorage
-   * @description get Foundation GUID saved on localStorage
-   * @example foundation.getGuidStorage()
-   * @return Foundation GUID saved on localStorage
-   */
-  getGuidStorage () {
-    return localStorage.getItem('guid') || false
+    window.localStorage.setItem('guid', guid)
+    return window.localStorage.getItem('guid')
   }
 
   /**
@@ -311,13 +355,13 @@ export default class Foundation extends EventSystem {
    * @return Foundation GUID saved on localStorage
    */
   setupAppGuid () {
-    const guidCache = this.getGuidStorage() || false
+    const guidCache = window.localStorage.getItem('guid') || false
     if (guidCache) {
       this.#_guid = guidCache
     } else {
       this.setGuidStorage(this.#_guid)
     }
-    return this.getGuidStorage()
+    return window.localStorage.getItem('guid')
   }
   
   /**
@@ -328,7 +372,7 @@ export default class Foundation extends EventSystem {
    * @return  {string|object} signature.error - Execution error
    * @return  {object} signature.data - Worker Registration Object
    */
-  #registerApplicationWorker (workerFile = 'ServiceWorker.js') {
+  /* #registerApplicationWorker (workerFile = 'ServiceWorker.js') {
     const self = this
     return new Promise((resolve, reject) => {
       if ('serviceWorker' in navigator) {
@@ -338,7 +382,7 @@ export default class Foundation extends EventSystem {
           })
           .then(function (reg) {
             // registration worked
-            navigator.serviceWorker.addEventListener('message', _workerOnMessage.bind(self))
+            navigator.serviceWorker.addEventListener('message', workerOnMessage.bind(self))
             if (reg.installing) {
               self.#_workers['foundation'] = reg.installing
               self.#_workers['foundation'].postMessage({ cmd: 'getClientId', message: null })
@@ -354,7 +398,7 @@ export default class Foundation extends EventSystem {
           })
       }
     })
-  }
+  } */
 
   /**
    * @async
@@ -366,7 +410,7 @@ export default class Foundation extends EventSystem {
    * @return  {string|object} signature.error - Execution error
    * @return  {object} signature.data - Worker Registration Object
    */
-  #registerWorker (name = '', workerFile = 'ServiceWorker.js') {
+  /* #registerWorker (name = '', workerFile = 'ServiceWorker.js') {
     const self = this
     return new Promise((resolve, reject) => {
       if ('serviceWorker' in navigator) {
@@ -376,7 +420,7 @@ export default class Foundation extends EventSystem {
           })
           .then(function (reg) {
             // registration worked
-            navigator.serviceWorker.addEventListener('message', _workerOnMessage.bind(self))
+            navigator.serviceWorker.addEventListener('message', workerOnMessage.bind(self))
             if (reg.installing) {
               self.#_workers[name] = reg.installing
               self.#_workers[name].postMessage({ cmd: 'getClientId', message: null })
@@ -392,7 +436,7 @@ export default class Foundation extends EventSystem {
           })
       }
     })
-  }
+  } */
 
   /**
    * @Private
@@ -417,7 +461,7 @@ export default class Foundation extends EventSystem {
         }
       }
     } catch (error) {
-      console.error(error)
+      // console.error(error)
       _error = error
     }
 
@@ -443,9 +487,9 @@ export default class Foundation extends EventSystem {
     try {
       const vitals = await this.#startVitals()
 
-      if (this.useWorker) {
-        await this.#registerApplicationWorker()
-      }
+      // if (this.useWorker) {
+        // await this.#registerApplicationWorker()
+      // }
 
       this.#_started = true
       
@@ -456,7 +500,7 @@ export default class Foundation extends EventSystem {
 
       }
     } catch (error) {
-      console.error(error)
+      // console.error(error)
       _error = error
     }
 

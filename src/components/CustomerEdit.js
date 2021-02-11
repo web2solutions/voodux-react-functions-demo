@@ -29,10 +29,10 @@ const MenuProps = {
 
 export default function CustomerEdit (props) {
   const [customer, setCustomer] = useState({
-    name: null,
-    address: null,
+    name: '',
+    address: '',
     cards: [],
-    email: null
+    email: ''
   })
 
   const [cards, setCards] = useState(['VISA ⠀*** 3719'])
@@ -70,27 +70,6 @@ export default function CustomerEdit (props) {
     }
     history.push('/Customers')
   }
-
-  // listen to update Customer Collection event on Data API
-  props.foundation.on(`collection:edit:${props.entity.toLowerCase()}`, function (eventObj) {
-    const { error } = eventObj
-    if (error) {
-      // console.error(error)
-    }
-    // update form
-    // manage state by setting users avoiding race conditions
-    // setCustomer([...newData])
-  })
-
-  // listen to delete Customer Collection event on Data API
-  props.foundation.on(`collection:delete:${props.entity.toLowerCase()}`, function (eventObj) {
-    const { error } = eventObj
-    if (error) {
-      // console.error(error)
-    }
-    // close form
-    history.push('/Customers')
-  })
 
   useEffect(async () => {
     // got customer

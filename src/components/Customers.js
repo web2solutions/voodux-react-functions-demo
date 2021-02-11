@@ -17,6 +17,11 @@ import swal from 'sweetalert'
 
 import Title from './Title'
 
+let onAddDocEventListener = null
+let onEditDocEventListener = null
+let onDeleteDocEventListener = null
+
+
 export default function Customers (props) {
   const [customers, setCustomers] = useState([])
   const { Customer } = props.foundation.data
@@ -56,58 +61,71 @@ export default function Customers (props) {
     })
   }
 
-  // listen to add Customer Collection event on Data API
-  props.foundation.on(`collection:add:${props.entity.toLowerCase()}`, function (eventObj) {
-    const { error, /* document, foundation, */ data } = eventObj
-    if (error) {
-      // console.error(`Error adding user: ${error}`)
-      return
-    }
-    setCustomers([data, ...customers])
-  })
 
-  // listen to update Customer Collection event on Data API
-  props.foundation.on(`collection:edit:${props.entity.toLowerCase()}`, function (eventObj) {
-    const { data, primaryKey, /* document, foundation, */ error } = eventObj
-    if (error) {
-      // console.error(`Error updating user: ${error}`)
-      return
-    }
-    const newData = customers.map(customer => {
-      if (customer.__id === primaryKey) {
-        return data
-      } else {
-        return customer
-      }
-    })
-    setCustomers([...newData])
-  })
-
-  // listen to delete Customer Collection event on Data API
-  props.foundation.on(`collection:delete:${props.entity.toLowerCase()}`, function (eventObj) {
-    const { error, /* document, foundation, */ data } = eventObj
-    if (error) {
-      // console.error(`Error deleting user: ${error}`)
-      return
-    }
-    const allCustomers = [...customers]
-    for (let x = 0; x < allCustomers.length; x++) {
-      const customer = allCustomers[x]
-      if (customer.__id === data.__id) {
-        allCustomers.splice(x)
-      }
-    }
-    setCustomers(allCustomers)
-  })
-
-  useEffect(async () => {
+  useEffect(() => {
     // got customers
-    const findCustomers = await Customer.find({})
-    if (!findCustomers) {
-      return
-    }
-    if (findCustomers.data) {
-      setCustomers(findCustomers.data)
+    // console.debug('------->>>>> Customers.js mouting events', props.foundation.stopListenTo)
+    // listen to add Customer Collection event on Data API
+    onAddDocEventListener = props.foundation.on(`collection:add:${props.entity.toLowerCase()}`, function (eventObj) {
+      // console.debug('------->>>>> Customers.js onAddDocEventListener', eventObj)
+      const { error, /* document, foundation, */ data } = eventObj
+      if (error) {
+        // console.error(`Error adding user: ${error}`)
+        return
+      }
+      setCustomers([data, ...customers])
+    })
+
+    // listen to update Customer Collection event on Data API
+    onEditDocEventListener = props.foundation.on(`collection:edit:${props.entity.toLowerCase()}`, function (eventObj) {
+      const { data, primaryKey, /* document, foundation, */ error } = eventObj
+      if (error) {
+        // console.error(`Error updating user: ${error}`)
+        return
+      }
+      const newData = customers.map(customer => {
+        if (customer.__id === primaryKey) {
+          return data
+        } else {
+          return customer
+        }
+      })
+      setCustomers([...newData])
+    })
+
+    // listen to delete Customer Collection event on Data API
+    onDeleteDocEventListener = props.foundation.on(`collection:delete:${props.entity.toLowerCase()}`, function (eventObj) {
+      const { error, /* document, foundation, */ data } = eventObj
+      if (error) {
+        // console.error(`Error deleting user: ${error}`)
+        return
+      }
+      const allCustomers = [...customers]
+      for (let x = 0; x < allCustomers.length; x++) {
+        const customer = allCustomers[x]
+        if (customer.__id === data.__id) {
+          allCustomers.splice(x)
+        }
+      }
+      setCustomers(allCustomers)
+    })
+
+    ;(async () => {
+      const findCustomers = await Customer.find({})
+      if (!findCustomers) {
+        return
+      }
+      if (findCustomers.data) {
+        setCustomers(findCustomers.data)
+      }
+    })();
+
+    return () => {
+      // stop to listen events on component unmount
+      // console.debug('------->>>>> Customers.js remove events')
+      props.foundation.stopListenTo(onAddDocEventListener)
+      props.foundation.stopListenTo(onEditDocEventListener)
+      props.foundation.stopListenTo(onDeleteDocEventListener)
     }
   }, []) // run one time only
 
@@ -138,7 +156,7 @@ export default function Customers (props) {
                     <TableCell>{customer.address}</TableCell>
                     <TableCell align='right'>{customer.cards.join(' / ')}</TableCell>
                     <TableCell align='right'>
-                      <Link color='primary' to={`/CustomersEdit/${customer.__id}`}>[edit]</Link> | <Link color='primary' href='#' onClick={e => handleDeleteCustomer(e, customer.__id)}>[delete]</Link>
+                      <Link color='primary' to={`/CustomersEdit/${customer.__id}`}>[edit]</Link> | <a color='primary' href='#' onClick={e => handleDeleteCustomer(e, customer.__id)}>[delete]</a>
                     </TableCell>
                   </TableRow>
                 ))}

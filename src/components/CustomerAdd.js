@@ -26,11 +26,12 @@ const MenuProps = {
 
 export default function CustomerAdd (props) {
   const [customer, setCustomer] = useState({
-    name: null,
+    name: '',
     address: 'Seminole, FL',
     cards: [],
-    email: null
+    email: ''
   })
+  // console.debug('teyyyyyyy')
 
   const [cards, setCards] = useState(['VISA ⠀*** 3719'])
 

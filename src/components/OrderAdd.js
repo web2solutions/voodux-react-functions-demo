@@ -18,11 +18,11 @@ import useStyles from './useStyles'
 import swal from 'sweetalert'
 
 const orderObj = {
-  name: null,
-  shipTo: null,
-  paymentMethod: null,
-  amount: null,
-  customerId: null
+  name: '',
+  shipTo: '',
+  paymentMethod: '',
+  amount: '',
+  customerId: ''
 }
 
 export default function OrderAdd (props) {
@@ -88,15 +88,17 @@ export default function OrderAdd (props) {
     history.push('/Orders')
   }
 
-  useEffect(async () => {
-    // got customers
-    const findCustomers = await Customer.find({})
-    if (!findCustomers) {
-      return
-    }
-    if (findCustomers.data) {
-      setCustomers(findCustomers.data)
-    }
+  useEffect(() => {
+    (async () => {
+      // got customers
+      const findCustomers = await Customer.find({})
+      if (!findCustomers) {
+        return
+      }
+      if (findCustomers.data) {
+        setCustomers(findCustomers.data)
+      }
+    })()
   }, []) // run one time only
 
   return (
@@ -117,7 +119,7 @@ export default function OrderAdd (props) {
                     value={order.customerId}
                     onChange={handleChangeFieldValue}
                   >
-                    <MenuItem key={null} value={null}>
+                    <MenuItem key='' value=''>
                       please selecte one
                     </MenuItem>
                     {customers.map(({ name, __id }) => (

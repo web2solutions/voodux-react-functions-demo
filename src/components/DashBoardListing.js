@@ -24,6 +24,11 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
+let onAddDocEventListener = null
+let onEditDocEventListener = null
+let onDeleteDocEventListener = null
+
+
 export default function DashBoardListing (props) {
   const [documents, setDocuments] = useState([])
   const DataAPI = props.foundation.data
@@ -38,7 +43,7 @@ export default function DashBoardListing (props) {
   const handlerOnOrderAdd = (eventObj) => {
     const { error, data } = eventObj
     if (error) {
-      console.error(`Error adding user: ${error}`)
+      // console.error(`Error adding user: ${error}`)
     }
     setDocuments([data, ...documents])
   }
@@ -46,7 +51,7 @@ export default function DashBoardListing (props) {
   const handlerOnOrderEdit = function (eventObj) {
     const { error, data, primaryKey } = eventObj
     if (error) {
-      console.error(`Error updating user: ${error}`)
+      // console.error(`Error updating user: ${error}`)
       return
     }
     const newData = documents.map((doc) => {
@@ -62,7 +67,7 @@ export default function DashBoardListing (props) {
   const handlerOnOrderDelete = (eventObj) => {
     const { error, primaryKey } = eventObj
     if (error) {
-      console.error(`Error deleting user: ${error}`)
+      // console.error(`Error deleting user: ${error}`)
       return
     }
     const allDocuments = [...documents]
@@ -75,23 +80,34 @@ export default function DashBoardListing (props) {
     setDocuments(allDocuments)
   }
 
-  // listen to add props.entity Collection event on Data API
-  props.foundation
-    .on(`collection:add:${props.entity.toLowerCase()}`, handlerOnOrderAdd)
-
-  // listen to edit props.entity Collection event on Data API
-  props.foundation
-    .on(`collection:edit:${props.entity.toLowerCase()}`, handlerOnOrderEdit)
-
-  // listen to delete props.entity Collection event on Data API
-  props.foundation
-    .on(`collection:delete:${props.entity.toLowerCase()}`, handlerOnOrderDelete)
-
-  useEffect(async () => {
+  useEffect(() => {
     // got documents
-    const findDocuments = await DataAPI[props.entity].find({})
-    if (findDocuments.data) {
-      setDocuments(findDocuments.data)
+    // console.debug('------->>>>> Dashboardlisting.js mouting events', props.foundation.stopListenTo)
+    // listen to add props.entity Collection event on Data API
+    onAddDocEventListener = props.foundation
+      .on(`collection:add:${props.entity.toLowerCase()}`, handlerOnOrderAdd)
+
+    // listen to edit props.entity Collection event on Data API
+    onEditDocEventListener = props.foundation
+      .on(`collection:edit:${props.entity.toLowerCase()}`, handlerOnOrderEdit)
+
+    // listen to delete props.entity Collection event on Data API
+    onDeleteDocEventListener = props.foundation
+      .on(`collection:delete:${props.entity.toLowerCase()}`, handlerOnOrderDelete)
+    
+    ;(async () => {
+      const findDocuments = await DataAPI[props.entity].find({})
+      if (findDocuments.data) {
+        setDocuments(findDocuments.data)
+      }
+    })();
+
+    return () => {
+      // stop to listen events on component unmount
+      // console.debug('------->>>>> Dashboardlisting.js remove events')
+      props.foundation.stopListenTo(onAddDocEventListener)
+      props.foundation.stopListenTo(onEditDocEventListener)
+      props.foundation.stopListenTo(onDeleteDocEventListener)
     }
   }, []) // run one time only
 

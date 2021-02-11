@@ -16,11 +16,11 @@ import useStyles from './useStyles'
 import swal from 'sweetalert'
 
 const orderObj = {
-  name: null,
-  shipTo: null,
-  paymentMethod: null,
-  amount: null,
-  customerId: null
+  name: '',
+  shipTo: '',
+  paymentMethod: '',
+  amount: '',
+  customerId: ''
 }
 
 export default function OrderEdit (props) {
@@ -87,43 +87,25 @@ export default function OrderEdit (props) {
     history.push('/Orders')
   }
 
-  // listen to update Order Collection event on Data API
-  props.foundation.on(`collection:edit:${props.entity.toLowerCase()}`, function (eventObj) {
-    const { error } = eventObj
-    if (error) {
-      throw new Error(`Error updating user: ${error}`)
-    }
-    // update form
-    // manage state by setting users avoiding race conditions
-    // setOrder([...newData])
-  })
+  useEffect(() => {
+    (async () => {
+      // got order
+      const findOrder = await Order.findById(__id)
+      if (!findOrder) {
+        return
+      }
+      if (findOrder.data) {
+        setOrder(findOrder.data)
+      }
 
-  // listen to delete Order Collection event on Data API
-  props.foundation.on(`collection:delete:${props.entity.toLowerCase()}`, function (eventObj) {
-    const { error } = eventObj
-    if (error) {
-      throw new Error(`Error deleting user: ${error}`)
-    }
-    // close form
-  })
-
-  useEffect(async () => {
-    // got order
-    const findOrder = await Order.findById(__id)
-    if (!findOrder) {
-      return
-    }
-    if (findOrder.data) {
-      setOrder(findOrder.data)
-    }
-
-    const findCustomers = await Customer.find({})
-    if (!findCustomers) {
-      return
-    }
-    if (findCustomers.data) {
-      setCustomers(findCustomers.data)
-    }
+      const findCustomers = await Customer.find({})
+      if (!findCustomers) {
+        return
+      }
+      if (findCustomers.data) {
+        setCustomers(findCustomers.data)
+      }
+    })()
   }, []) // run one time only
 
   return (
@@ -144,7 +126,7 @@ export default function OrderEdit (props) {
                     value={order.customerId}
                     onChange={handleChangeFieldValue}
                   >
-                    <MenuItem key={null} value={null}>
+                    <MenuItem key='' value=''>
                       please selecte one
                     </MenuItem>
                     {customers.map(({ name, __id }) => (

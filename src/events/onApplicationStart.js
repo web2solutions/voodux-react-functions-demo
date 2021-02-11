@@ -9,14 +9,14 @@ export default async function (eventObj) {
     name: 'Eduardo Almeida',
     username: 'web2'
   })
-  console.debug('Eduardo', Eduardo)
+  // console.debug('Eduardo', Eduardo)
 
   const Volvo = await Product.add({
     name: 'Volvo XC90',
     vendor: 'Volvo',
     price_cost: 150000
   })
-  console.debug('Volvo', Volvo)
+  // console.debug('Volvo', Volvo)
 
   // console.log('foundation.applicationWorker', foundation.applicationWorker)
 

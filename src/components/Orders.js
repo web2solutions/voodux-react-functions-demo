@@ -23,6 +23,11 @@ const formatter = new Intl.NumberFormat('en-US', {
   maximumFractionDigits: 2
 })
 
+let onAddDocEventListener = null
+let onEditDocEventListener = null
+let onDeleteDocEventListener = null
+
+
 export default function Orders (props) {
   const [orders, setOrders] = useState([])
   const { Order } = props.foundation.data
@@ -48,7 +53,7 @@ export default function Orders (props) {
     }).then(async (willDelete) => {
       if (willDelete) {
         const r = await Order.delete(___id)
-        console.error(r)
+        // console.error(r)
         if (r.error) {
           swal('Database error', e.error.message, 'error')
           return
@@ -62,58 +67,70 @@ export default function Orders (props) {
     })
   }
 
-  // listen to add Order Collection event on Data API
-  props.foundation.on(`collection:add:${props.entity.toLowerCase()}`, function (eventObj) {
-    const { error, /* document, foundation, */ data } = eventObj
-    if (error) {
-      console.error(`Error adding user: ${error}`)
-      return
-    }
-    setOrders([data, ...orders])
-  })
+  useEffect(() => {
 
-  // listen to update Order Collection event on Data API
-  props.foundation.on(`collection:edit:${props.entity.toLowerCase()}`, function (eventObj) {
-    const { data, primaryKey, /* document, foundation, */ error } = eventObj
-    if (error) {
-      console.error(`Error updating user: ${error}`)
-      return
-    }
-    const newData = orders.map(order => {
-      if (order.__id === primaryKey) {
-        return data
-      } else {
-        return order
+    // listen to add Order Collection event on Data API
+    onAddDocEventListener = props.foundation.on(`collection:add:${props.entity.toLowerCase()}`, function (eventObj) {
+      // console.debug('orders ollection:add')
+      const { error, /* document, foundation, */ data } = eventObj
+      if (error) {
+        // console.error(`Error adding user: ${error}`)
+        return
       }
+      setOrders([data, ...orders])
     })
-    setOrders([...newData])
-  })
 
-  // listen to delete Order Collection event on Data API
-  props.foundation.on(`collection:delete:${props.entity.toLowerCase()}`, function (eventObj) {
-    const { error, /* document, foundation, */ data } = eventObj
-    if (error) {
-      console.error(`Error deleting user: ${error}`)
-      return
-    }
-    const allOrders = [...orders]
-    for (let x = 0; x < allOrders.length; x++) {
-      const order = allOrders[x]
-      if (order.__id === data.__id) {
-        allOrders.splice(x)
+    // listen to update Order Collection event on Data API
+    onEditDocEventListener = props.foundation.on(`collection:edit:${props.entity.toLowerCase()}`, function (eventObj) {
+      const { data, primaryKey, /* document, foundation, */ error } = eventObj
+      if (error) {
+        // console.error(`Error updating user: ${error}`)
+        return
       }
-    }
-    setOrders(allOrders)
-  })
+      const newData = orders.map(order => {
+        if (order.__id === primaryKey) {
+          return data
+        } else {
+          return order
+        }
+      })
+      setOrders([...newData])
+    })
 
-  useEffect(async () => {
+    // listen to delete Order Collection event on Data API
+    onDeleteDocEventListener = props.foundation.on(`collection:delete:${props.entity.toLowerCase()}`, function (eventObj) {
+      const { error, /* document, foundation, */ data } = eventObj
+      if (error) {
+        // console.error(`Error deleting user: ${error}`)
+        return
+      }
+      const allOrders = [...orders]
+      for (let x = 0; x < allOrders.length; x++) {
+        const order = allOrders[x]
+        if (order.__id === data.__id) {
+          allOrders.splice(x)
+        }
+      }
+      setOrders(allOrders)
+    })
+
     // got orders
-    const findOrders = await Order.find({})
-    if (!findOrders) {
-      return
-    }
-    if (findOrders.data) {
-      setOrders(findOrders.data)
+    ;(async () => {
+      const findOrders = await Order.find({})
+      if (!findOrders) {
+        return
+      }
+      if (findOrders.data) {
+        setOrders(findOrders.data)
+      }
+    })()
+
+    return () => {
+      // console.debug('------->>>>> Orders.js remove events')
+      // stop to listen events on component unmount
+      props.foundation.stopListenTo(onAddDocEventListener)
+      props.foundation.stopListenTo(onEditDocEventListener)
+      props.foundation.stopListenTo(onDeleteDocEventListener)
     }
   }, []) // run one time only
 
@@ -146,7 +163,7 @@ export default function Orders (props) {
                     <TableCell>{order.paymentMethod}</TableCell>
                     <TableCell align='right'>USD {formatter.format(order.amount)}</TableCell>
                     <TableCell align='right'>
-                      <Link color='primary' to={`/OrdersEdit/${order.__id}`}>[edit]</Link> | <Link color='primary' href='#' style={{ display: 'none' }} onClick={e => handleDeleteOrder(e, order.__id)}>[delete]</Link>
+                      <Link color='primary' to={`/OrdersEdit/${order.__id}`}>[edit]</Link> | <a color='primary' href='#' style={{ display: 'none' }} onClick={e => handleDeleteOrder(e, order.__id)}>[delete]</a>
                     </TableCell>
                   </TableRow>
                 ))}

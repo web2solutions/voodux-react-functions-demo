@@ -58,7 +58,7 @@ import CustomerSchema from './schemas/Customer'
   )
 
   /* window.setInterval(() => {
-    console.log('savinf on storage')
+    // console.log('savinf on storage')
     window.localStorage.setItem('internalMessage', 'aaaaaa')
   }, 1000)
   */

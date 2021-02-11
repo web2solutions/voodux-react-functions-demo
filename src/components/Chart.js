@@ -13,10 +13,9 @@ import moment from 'moment'
 
 import Title from './Title'
 
-/* const formatter = new Intl.NumberFormat('en-US', {
-  minimumFractionDigits: 2,
-  maximumFractionDigits: 2
-}) */
+let onAddDocEventListener = null
+let onEditDocEventListener = null
+let onDeleteDocEventListener = null
 
 /**
  * @author Eduardo Perotta de Almeida <web2solucoes@gmail.com>
@@ -32,6 +31,7 @@ export default function Chart (props) {
   const theme = useTheme()
 
   const _setSeries = async () => {
+    // console.debug('chart _setSeries')
     const { data } = await Order.find({})
     if (!data) {
       return
@@ -45,6 +45,7 @@ export default function Chart (props) {
         mseconds: (new Date(date)).getTime()
       }
     })
+    
     const final = [
       { time: '00:00', amount: 0 },
       ...(series.slice().sort((a, b) => a.mseconds - b.mseconds)),
@@ -55,6 +56,7 @@ export default function Chart (props) {
   }
 
   const handlerChangeOrder = async (eventObj) => {
+    // console.debug('chart handlerChangeOrder')
     const { error } = eventObj
     if (error) {
       return
@@ -62,17 +64,26 @@ export default function Chart (props) {
     await _setSeries()
   }
 
-  // listen to add Order Collection event on Data API
-  props.foundation.on(`collection:add:${props.entity.toLowerCase()}`, handlerChangeOrder)
+  useEffect(() => {
+    // console.debug('------->>>>> Chart.js mount events', props.foundation.stopListenTo)
+    // listen to add Order Collection event on Data API
+    onAddDocEventListener = props.foundation.on(`collection:add:${props.entity.toLowerCase()}`, handlerChangeOrder)
 
-  // listen to edit Order Collection event on Data API
-  props.foundation.on(`collection:edit:${props.entity.toLowerCase()}`, handlerChangeOrder)
+    // listen to edit Order Collection event on Data API
+    onEditDocEventListener = props.foundation.on(`collection:edit:${props.entity.toLowerCase()}`, handlerChangeOrder)
 
-  // listen to delete Order Collection event on Data API
-  props.foundation.on(`collection:delete:${props.entity.toLowerCase()}`, handlerChangeOrder)
+    // listen to delete Order Collection event on Data API
+    onDeleteDocEventListener = props.foundation.on(`collection:delete:${props.entity.toLowerCase()}`, handlerChangeOrder)
+    
+    ;(async () => (await _setSeries()))();
 
-  useEffect(async () => {
-    await _setSeries()
+    return () => {
+      // stop to listen events on component unmount
+      // console.debug('------->>>>> Chart.js remove events')
+      props.foundation.stopListenTo(onAddDocEventListener)
+      props.foundation.stopListenTo(onEditDocEventListener)
+      props.foundation.stopListenTo(onDeleteDocEventListener)
+    }
   }, []) // run one time only
 
   return (

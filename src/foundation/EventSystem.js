@@ -35,14 +35,19 @@ class EventSystem {
     })
   }
 
+  stopListenTo (eventId) {
+    return this.destroyEvent(eventId)
+  }
+
   destroyEvent (eventId) {
-    console.log('Mediator.destroyEvent', eventId)
+    // console.log('Mediator.destroyEvent', eventId)
+    // console.log('Mediator.destroyEvent', this)
     let removed = false
     for (let x = 0; x < this.eventBus.length; x++) {
       const event = this.eventBus[x]
       // console.log(event.id);
       if (event.id === eventId) {
-        console.log('eventId', eventId)
+        // console.log('eventId', eventId)
         this.eventBus.splice(x, 1)
         removed = true
       }
