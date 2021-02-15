@@ -28,7 +28,7 @@ It uses [Material UI](https://material-ui.com/) as UI framework.
 [Project](https://github.com/web2solutions/voodux)
 
 
-[Code Documentation](https://web2solutions.github.io/voodux/)
+[Code Documentation](https://web2solutions.github.io/voodux/code/index.html)
 
 
 
