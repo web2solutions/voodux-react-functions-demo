@@ -1,6 +1,7 @@
-import Foundation from '../foundation/Foundation'
+// import voodux
+import voodux from 'voodux'
 
-const schema = new Foundation.Schema({
+const schema = new voodux.Foundation.Schema({
   name: {
     type: String,
     required: true,
