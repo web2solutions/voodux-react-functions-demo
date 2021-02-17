@@ -41,6 +41,7 @@ export default function DashBoardListing (props) {
   }
 
   const handlerOnOrderAdd = (eventObj) => {
+    console.log('handlerOnOrderAdd', eventObj)
     const { error, data } = eventObj
     if (error) {
       // console.error(`Error adding user: ${error}`)
@@ -49,6 +50,7 @@ export default function DashBoardListing (props) {
   }
 
   const handlerOnOrderEdit = function (eventObj) {
+    
     const { error, data, primaryKey } = eventObj
     if (error) {
       // console.error(`Error updating user: ${error}`)
@@ -109,7 +111,7 @@ export default function DashBoardListing (props) {
       props.foundation.stopListenTo(onEditDocEventListener)
       props.foundation.stopListenTo(onDeleteDocEventListener)
     }
-  }, []) // run one time only
+  }, [documents]) // run one time only
 
   const classes = useStyles()
   return (
