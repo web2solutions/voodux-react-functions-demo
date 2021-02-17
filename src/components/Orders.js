@@ -132,7 +132,7 @@ export default function Orders (props) {
       props.foundation.stopListenTo(onEditDocEventListener)
       props.foundation.stopListenTo(onDeleteDocEventListener)
     }
-  }, []) // run one time only
+  }, [orders]) // run one time only
 
   return (
     <>

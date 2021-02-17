@@ -84,7 +84,7 @@ export default function Chart (props) {
       props.foundation.stopListenTo(onEditDocEventListener)
       props.foundation.stopListenTo(onDeleteDocEventListener)
     }
-  }, []) // run one time only
+  }, [series]) // run one time only
 
   return (
     <>

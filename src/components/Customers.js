@@ -127,7 +127,7 @@ export default function Customers (props) {
       props.foundation.stopListenTo(onEditDocEventListener)
       props.foundation.stopListenTo(onDeleteDocEventListener)
     }
-  }, []) // run one time only
+  }, [customers]) // run one time only
 
   return (
     <>

@@ -85,7 +85,7 @@ export default function Deposits (props) {
       props.foundation.stopListenTo(onEditDocEventListener)
       props.foundation.stopListenTo(onDeleteDocEventListener)
     }
-  }, []) // run one time only
+  }, [total]) // run one time only
 
   return (
     <>

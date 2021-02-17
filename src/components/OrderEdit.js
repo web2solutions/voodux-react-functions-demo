@@ -106,7 +106,7 @@ export default function OrderEdit (props) {
         setCustomers(findCustomers.data)
       }
     })()
-  }, []) // run one time only
+  }, [order]) // run one time only
 
   return (
     <>

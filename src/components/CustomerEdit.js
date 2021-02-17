@@ -80,7 +80,7 @@ export default function CustomerEdit (props) {
     if (findCustomer.data) {
       setCustomer(findCustomer.data)
     }
-  }, []) // run one time only
+  }, [customer]) // run one time only
 
   return (
     <>
