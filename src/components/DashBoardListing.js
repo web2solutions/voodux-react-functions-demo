@@ -31,8 +31,8 @@ let onDeleteDocEventListener = null
 
 export default function DashBoardListing (props) {
   const [documents, setDocuments] = useState([])
-  const DataAPI = props.foundation.data
-
+  const { Order } = props.foundation.data
+  const classes = useStyles()
   const history = useHistory()
 
   const handleAddDocument = async (e) => {
@@ -40,80 +40,83 @@ export default function DashBoardListing (props) {
     history.push('/OrdersAdd')
   }
 
-  const handlerOnOrderAdd = (eventObj) => {
-    console.log('handlerOnOrderAdd', eventObj)
-    const { error, data } = eventObj
-    if (error) {
-      // console.error(`Error adding user: ${error}`)
-    }
-    setDocuments([data, ...documents])
-  }
-
-  const handlerOnOrderEdit = function (eventObj) {
-    
-    const { error, data, primaryKey } = eventObj
-    if (error) {
-      // console.error(`Error updating user: ${error}`)
-      return
-    }
-    const newData = documents.map((doc) => {
-      if (doc.__id === primaryKey) {
-        return data
-      } else {
-        return doc
-      }
-    })
-    setDocuments([...newData])
-  }
-
-  const handlerOnOrderDelete = (eventObj) => {
-    const { error, primaryKey } = eventObj
-    if (error) {
-      // console.error(`Error deleting user: ${error}`)
-      return
-    }
-    const allDocuments = [...documents]
-    for (let x = 0; x < allDocuments.length; x++) {
-      const doc = allDocuments[x]
-      if (doc.__id === primaryKey) {
-        allDocuments.splice(x)
-      }
-    }
-    setDocuments(allDocuments)
-  }
-
   useEffect(() => {
     // got documents
-    // console.debug('------->>>>> Dashboardlisting.js mouting events', props.foundation.stopListenTo)
+    // console.log('------->>>>> Dashboardlisting.js mouting events', props.foundation.stopListenTo)
     // listen to add props.entity Collection event on Data API
     onAddDocEventListener = props.foundation
-      .on(`collection:add:${props.entity.toLowerCase()}`, handlerOnOrderAdd)
+      .on(`collection:add:${props.entity.toLowerCase()}`, (eventObj) => {
+      console.log('handlerOnOrderAdd', eventObj)
+      const { error, data } = eventObj
+      if (error) {
+        // console.error(`Error adding user: ${error}`)
+      }
+      setDocuments([data, ...documents])
+    })
 
     // listen to edit props.entity Collection event on Data API
     onEditDocEventListener = props.foundation
-      .on(`collection:edit:${props.entity.toLowerCase()}`, handlerOnOrderEdit)
+      .on(`collection:edit:${props.entity.toLowerCase()}`, (eventObj) => {
+    
+      const { error, data, primaryKey } = eventObj
+      if (error) {
+        // console.error(`Error updating user: ${error}`)
+        return
+      }
+      const newData = documents.map((doc) => {
+        if (doc.__id === primaryKey) {
+          return data
+        } else {
+          return doc
+        }
+      })
+      setDocuments([...newData])
+    })
 
     // listen to delete props.entity Collection event on Data API
     onDeleteDocEventListener = props.foundation
-      .on(`collection:delete:${props.entity.toLowerCase()}`, handlerOnOrderDelete)
-    
-    ;(async () => {
-      const findDocuments = await DataAPI[props.entity].find({})
-      if (findDocuments.data) {
-        setDocuments(findDocuments.data)
+      .on(`collection:delete:${props.entity.toLowerCase()}`, (eventObj) => {
+      const { error, primaryKey } = eventObj
+      if (error) {
+        // console.error(`Error deleting user: ${error}`)
+        return
       }
-    })();
-
+      const allDocuments = [...documents]
+      for (let x = 0; x < allDocuments.length; x++) {
+        const doc = allDocuments[x]
+        if (doc.__id === primaryKey) {
+          allDocuments.splice(x)
+        }
+      }
+      setDocuments(allDocuments)
+    })
     return () => {
       // stop to listen events on component unmount
-      // console.debug('------->>>>> Dashboardlisting.js remove events')
+      console.log('------->>>>> Dashboardlisting.js remove events')
       props.foundation.stopListenTo(onAddDocEventListener)
       props.foundation.stopListenTo(onEditDocEventListener)
       props.foundation.stopListenTo(onDeleteDocEventListener)
+      onAddDocEventListener = null
+      onEditDocEventListener = null
+      onDeleteDocEventListener = null
     }
-  }, [documents]) // run one time only
+  }, [documents])
 
-  const classes = useStyles()
+  useEffect(() => {
+    async function findOrders() {
+      const findDocuments = await Order.find({})
+      if (findDocuments.data) {
+        setDocuments(findDocuments.data)
+      }
+    }
+    if (documents.length === 0) {
+      findOrders()
+    }
+
+  }, []) // run one time only
+
+
+  
   return (
     <>
       <Title>Recent {props.entity}</Title>

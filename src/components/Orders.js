@@ -1,6 +1,11 @@
 /* global  */
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { Link, useHistory } from 'react-router-dom'
+
+import swal from 'sweetalert'
+import moment from 'moment'
+
+// material UI
 import Grid from '@material-ui/core/Grid'
 import Paper from '@material-ui/core/Paper'
 import Table from '@material-ui/core/Table'
@@ -11,26 +16,26 @@ import TableRow from '@material-ui/core/TableRow'
 // import Link from '@material-ui/core/Link'
 import Button from '@material-ui/core/Button'
 import ButtonGroup from '@material-ui/core/ButtonGroup'
+
 import useStyles from './useStyles'
-
-import swal from 'sweetalert'
-import moment from 'moment'
-
 import Title from './Title'
+
+// import custom hooks
+import onAddDocHook from './hooks/onAddDocHook'
+import onEditDocHook from './hooks/onEditDocHook'
+import onDeleteDocHook from './hooks/onDeleteDocHook'
 
 const formatter = new Intl.NumberFormat('en-US', {
   minimumFractionDigits: 2,
   maximumFractionDigits: 2
 })
 
-let onAddDocEventListener = null
-let onEditDocEventListener = null
-let onDeleteDocEventListener = null
-
-
 export default function Orders (props) {
-  const [orders, setOrders] = useState([])
   const { Order } = props.foundation.data
+  const [orders, setOrders] = useState([])
+  const [newDoc] = onAddDocHook(Order)
+  const [editedDoc] = onEditDocHook(Order)
+  const [deletedDoc] = onDeleteDocHook(Order)
 
   const history = useHistory()
 
@@ -67,55 +72,48 @@ export default function Orders (props) {
     })
   }
 
+  // whatch for new docs
   useEffect(() => {
+    if (newDoc !== null) {
+      console.log('newDoc mudou', newDoc)
+      setOrders([newDoc, ...orders])
+      console.log('orders', orders)
+    }
+  }, [newDoc]) // run one time only
 
-    // listen to add Order Collection event on Data API
-    onAddDocEventListener = props.foundation.on(`collection:add:${props.entity.toLowerCase()}`, function (eventObj) {
-      // console.debug('orders ollection:add')
-      const { error, /* document, foundation, */ data } = eventObj
-      if (error) {
-        // console.error(`Error adding user: ${error}`)
-        return
-      }
-      setOrders([data, ...orders])
-    })
-
-    // listen to update Order Collection event on Data API
-    onEditDocEventListener = props.foundation.on(`collection:edit:${props.entity.toLowerCase()}`, function (eventObj) {
-      const { data, primaryKey, /* document, foundation, */ error } = eventObj
-      if (error) {
-        // console.error(`Error updating user: ${error}`)
-        return
-      }
-      const newData = orders.map(order => {
-        if (order.__id === primaryKey) {
-          return data
+  // watch for edited docs
+  useEffect(() => {
+    if (editedDoc !== null) {
+      console.log('editedDoc mudou', editedDoc)
+      const newData = orders.map((order) => {
+        if (order.__id === editedDoc.__id) {
+          return editedDoc
         } else {
           return order
         }
       })
       setOrders([...newData])
-    })
+      console.log('orders', orders)
+    }
+  }, [editedDoc]) // run one time only
 
-    // listen to delete Order Collection event on Data API
-    onDeleteDocEventListener = props.foundation.on(`collection:delete:${props.entity.toLowerCase()}`, function (eventObj) {
-      const { error, /* document, foundation, */ data } = eventObj
-      if (error) {
-        // console.error(`Error deleting user: ${error}`)
-        return
-      }
+  // watch for deleted docs
+  useEffect(() => {
+    if (deletedDoc !== null) {
       const allOrders = [...orders]
       for (let x = 0; x < allOrders.length; x++) {
         const order = allOrders[x]
-        if (order.__id === data.__id) {
-          allOrders.splice(x)
+        if (order.__id === deletedDoc.__id) {
+          allOrders.splice(x, 1)
         }
       }
       setOrders(allOrders)
-    })
+    }
+  }, [deletedDoc]) // run one time only
+  
 
-    // got orders
-    ;(async () => {
+  useEffect(() => {
+    async function findOrders() {
       const findOrders = await Order.find({})
       if (!findOrders) {
         return
@@ -123,16 +121,12 @@ export default function Orders (props) {
       if (findOrders.data) {
         setOrders(findOrders.data)
       }
-    })()
-
-    return () => {
-      // console.debug('------->>>>> Orders.js remove events')
-      // stop to listen events on component unmount
-      props.foundation.stopListenTo(onAddDocEventListener)
-      props.foundation.stopListenTo(onEditDocEventListener)
-      props.foundation.stopListenTo(onDeleteDocEventListener)
     }
-  }, [orders]) // run one time only
+    if (orders.length === 0) {
+      console.log('finding ')
+      findOrders()
+    }
+  }, []) // run one time only
 
   return (
     <>

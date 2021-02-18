@@ -24,7 +24,7 @@ const orderObj = {
 }
 
 export default function OrderEdit (props) {
-  const [order, setOrder] = useState(orderObj)
+  const [order, setOrder] = useState({...orderObj})
   const [customers, setCustomers] = useState([])
 
   const history = useHistory()
@@ -36,8 +36,8 @@ export default function OrderEdit (props) {
   const classes = useStyles()
 
   const handleChangeFieldValue = async e => {
-    // e.preventDefault()
-    // console.debug(e)
+    e.preventDefault()
+    console.debug(e)
     if (e.target) {
       if (e.target.value === null || e.target.value === 'null') {
         const copy = { ...orderObj }
@@ -81,7 +81,8 @@ export default function OrderEdit (props) {
 
     const { error } = await Order.edit(order.__id, doc)
     if (error) {
-      swal('Database error', error.message, 'error')
+      console.log(typeof error, error)
+      swal('Database error', (error.message || error), 'error')
       return
     }
     history.push('/Orders')
@@ -94,19 +95,20 @@ export default function OrderEdit (props) {
       if (!findOrder) {
         return
       }
-      if (findOrder.data) {
-        setOrder(findOrder.data)
-      }
 
       const findCustomers = await Customer.find({})
-      if (!findCustomers) {
-        return
-      }
+
       if (findCustomers.data) {
+        const orderCustomer = (findCustomers.data.filter(c => (c.name === findOrder.data.name)))[0]
+        const orderData = { ...findOrder.data }
+        orderData.customerId = orderCustomer.__id || ''
+        console.log('customers', findCustomers.data)
+        console.log('order', orderData)
         setCustomers(findCustomers.data)
+        setOrder(orderData)
       }
     })()
-  }, [order]) // run one time only
+  }, []) // run one time only
 
   return (
     <>

@@ -17,17 +17,21 @@ import swal from 'sweetalert'
 
 import Title from './Title'
 
-let onAddDocEventListener = null
-let onEditDocEventListener = null
-let onDeleteDocEventListener = null
+// import custom hooks
+import onAddDocHook from './hooks/onAddDocHook'
+import onEditDocHook from './hooks/onEditDocHook'
+import onDeleteDocHook from './hooks/onDeleteDocHook'
+
 
 
 export default function Customers (props) {
   const [customers, setCustomers] = useState([])
   const { Customer } = props.foundation.data
-
+  const [newDoc] = onAddDocHook(Customer)
+  const [editedDoc] = onEditDocHook(Customer)
+  const [deletedDoc] = onDeleteDocHook(Customer)
+  
   const history = useHistory()
-
   const classes = useStyles()
 
   const handleAddCustomer = (e) => {
@@ -62,55 +66,48 @@ export default function Customers (props) {
   }
 
 
+  // whatch for new docs
   useEffect(() => {
-    // got customers
-    // console.debug('------->>>>> Customers.js mouting events', props.foundation.stopListenTo)
-    // listen to add Customer Collection event on Data API
-    onAddDocEventListener = props.foundation.on(`collection:add:${props.entity.toLowerCase()}`, function (eventObj) {
-      // console.debug('------->>>>> Customers.js onAddDocEventListener', eventObj)
-      const { error, /* document, foundation, */ data } = eventObj
-      if (error) {
-        // console.error(`Error adding user: ${error}`)
-        return
-      }
-      setCustomers([data, ...customers])
-    })
+    if (newDoc !== null) {
+      console.log('newDoc mudou', newDoc)
+      setCustomers([newDoc, ...customers])
+      console.log('customers', customers)
+    }
+  }, [newDoc]) // run one time only
 
-    // listen to update Customer Collection event on Data API
-    onEditDocEventListener = props.foundation.on(`collection:edit:${props.entity.toLowerCase()}`, function (eventObj) {
-      const { data, primaryKey, /* document, foundation, */ error } = eventObj
-      if (error) {
-        // console.error(`Error updating user: ${error}`)
-        return
-      }
-      const newData = customers.map(customer => {
-        if (customer.__id === primaryKey) {
-          return data
+  // watch for edited docs
+  useEffect(() => {
+    if (editedDoc !== null) {
+      console.log('editedDoc mudou', editedDoc)
+      const newData = customers.map((customer) => {
+        if (customer.__id === editedDoc.__id) {
+          return editedDoc
         } else {
           return customer
         }
       })
       setCustomers([...newData])
-    })
+      console.log('customers', customers)
+    }
+  }, [editedDoc]) // run one time only
 
-    // listen to delete Customer Collection event on Data API
-    onDeleteDocEventListener = props.foundation.on(`collection:delete:${props.entity.toLowerCase()}`, function (eventObj) {
-      const { error, /* document, foundation, */ data } = eventObj
-      if (error) {
-        // console.error(`Error deleting user: ${error}`)
-        return
-      }
+  // watch for deleted docs
+  useEffect(() => {
+    if (deletedDoc !== null) {
+
       const allCustomers = [...customers]
       for (let x = 0; x < allCustomers.length; x++) {
         const customer = allCustomers[x]
-        if (customer.__id === data.__id) {
-          allCustomers.splice(x)
+        if (customer.__id === deletedDoc.__id) {
+          allCustomers.splice(x, 1)
         }
       }
       setCustomers(allCustomers)
-    })
+    }
+  }, [deletedDoc]) // run one time only
 
-    ;(async () => {
+  useEffect(() => {
+    async function findCustomers() {
       const findCustomers = await Customer.find({})
       if (!findCustomers) {
         return
@@ -118,16 +115,14 @@ export default function Customers (props) {
       if (findCustomers.data) {
         setCustomers(findCustomers.data)
       }
-    })();
-
-    return () => {
-      // stop to listen events on component unmount
-      // console.debug('------->>>>> Customers.js remove events')
-      props.foundation.stopListenTo(onAddDocEventListener)
-      props.foundation.stopListenTo(onEditDocEventListener)
-      props.foundation.stopListenTo(onDeleteDocEventListener)
     }
-  }, [customers]) // run one time only
+    console.log('finding')
+    if (customers.length === 0) {
+      findCustomers()
+    }
+  }, [customers])
+  
+
 
   return (
     <>

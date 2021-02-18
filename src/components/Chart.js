@@ -42,13 +42,13 @@ export default function Chart (props) {
       return {
         amount: _total,
         time: moment(date).format('HH:mm:ss'),
-        mseconds: (new Date(date)).getTime()
+        mseconds: new Date(date).getTime()
       }
     })
-    
+
     const final = [
       { time: '00:00', amount: 0 },
-      ...(series.slice().sort((a, b) => a.mseconds - b.mseconds)),
+      ...series.slice().sort((a, b) => a.mseconds - b.mseconds),
       { time: '24:00', amount: undefined }
     ]
     // console.log(final)
@@ -63,19 +63,27 @@ export default function Chart (props) {
     }
     await _setSeries()
   }
-
+  
   useEffect(() => {
     // console.debug('------->>>>> Chart.js mount events', props.foundation.stopListenTo)
     // listen to add Order Collection event on Data API
-    onAddDocEventListener = props.foundation.on(`collection:add:${props.entity.toLowerCase()}`, handlerChangeOrder)
+    onAddDocEventListener = props.foundation.on(
+      `collection:add:${props.entity.toLowerCase()}`,
+      handlerChangeOrder
+    )
 
     // listen to edit Order Collection event on Data API
-    onEditDocEventListener = props.foundation.on(`collection:edit:${props.entity.toLowerCase()}`, handlerChangeOrder)
+    onEditDocEventListener = props.foundation.on(
+      `collection:edit:${props.entity.toLowerCase()}`,
+      handlerChangeOrder
+    )
 
     // listen to delete Order Collection event on Data API
-    onDeleteDocEventListener = props.foundation.on(`collection:delete:${props.entity.toLowerCase()}`, handlerChangeOrder)
-    
-    ;(async () => (await _setSeries()))();
+    onDeleteDocEventListener = props.foundation.on(
+      `collection:delete:${props.entity.toLowerCase()}`,
+      handlerChangeOrder
+    )
+    ;(async () => await _setSeries())()
 
     return () => {
       // stop to listen events on component unmount
@@ -84,7 +92,7 @@ export default function Chart (props) {
       props.foundation.stopListenTo(onEditDocEventListener)
       props.foundation.stopListenTo(onDeleteDocEventListener)
     }
-  }, [series]) // run one time only
+  }, []) // run one time only
 
   return (
     <>

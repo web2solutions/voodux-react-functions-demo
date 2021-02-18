@@ -46,9 +46,11 @@ export default function CustomerEdit (props) {
   const classes = useStyles()
 
   const handleChangeFieldValue = e => {
-    // e.preventDefault()
+    e.preventDefault()
     const newHash = { ...customer }
     newHash[e.target.id || e.target.name] = e.target.value
+    console.log(e.target)
+    console.log(newHash)
     setCustomer(newHash)
   }
 
@@ -71,16 +73,18 @@ export default function CustomerEdit (props) {
     history.push('/Customers')
   }
 
-  useEffect(async () => {
+  useEffect(() => {
     // got customer
-    const findCustomer = await Customer.findById(__id)
-    if (!findCustomer) {
-      return
-    }
-    if (findCustomer.data) {
-      setCustomer(findCustomer.data)
-    }
-  }, [customer]) // run one time only
+    (async () => {
+      const findCustomer = await Customer.findById(__id)
+      if (!findCustomer) {
+        return
+      }
+      if (findCustomer.data) {
+        setCustomer(findCustomer.data)
+      }
+    })()
+  }, []) // run one time only
 
   return (
     <>
