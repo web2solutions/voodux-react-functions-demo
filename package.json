@@ -63,7 +63,7 @@
     "react-router-dom": "^5.2.0",
     "recharts": "^2.0.4",
     "sweetalert": "^2.1.2",
-    "voodux": "0.0.10"
+    "voodux": "0.0.13"
   },
   "description": "React application (Functional components) demo leveraging the [voodux](https://github.com/web2solutions/voodux) as it underlying architecture to handle it data."
 }
